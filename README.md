@@ -14,7 +14,7 @@ Automatic negation detector for clinical documents in Spanish
 
 - Java JDK 1.8
 - Libraries: 
-    - Weka 3.8: JAR and SRC
+    - Weka 3.4.12: JAR and SRC
     - Stanford CoreNLP 3.8: bin, javadoc, sources and models
 	
 --------------------------------------------------------------------------------
