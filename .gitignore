@@ -1,0 +1,12 @@
+.metadata
+.settings
+bin/
+Libs/stanford-spanish-corenlp-models.jar
+
+
+# Package Files #
+
+# *.jar
+
+*.war
+*.ear

@@ -1,0 +1,10 @@
+% 1
+no,neg,xotherx,pain,xotherx,?
+no,neg,xotherx,xotherx,xotherx,?
+no,neg,xotherx,no,xotherx,?
+no,neg,xotherx,xotherx,xotherx,?
+% 1
+no,neg,xotherx,no,xotherx,?
+no,neg,xotherx,pain,xotherx,?
+no,neg,xotherx,xotherx,xotherx,?
+no,neg,xotherx,xotherx,xotherx,?
