@@ -51,7 +51,7 @@ public class VisualizeSentence {
 		int scope = 1;
 		for(int i=0; i< indexClassifyScopes.size(); i++){
 			
-			if(indexClassifyScopes.get(i).getType().trim().equals("isn")){
+			if(indexClassifyScopes.get(i).getType().trim().equals("is")){
 				int index = sentence.indexOf(indexClassifyScopes.get(i).getToken());
 				sentence.add(index+1, "</SCOPE"+scope+">"); //Close tag
 				sentence.add(index, "<SCOPE"+scope+">");  //Open tag

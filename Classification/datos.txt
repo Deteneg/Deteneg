@@ -1,3 +1,8 @@
 % 1
-no,rn,alergias,aq0000,1,post,aq0000,no,medicamentosas,rn,aq0000,o,?,?,?
-no,rn,medicamentosas,aq0000,2,post,aq0000_aq0000,alergias,?,aq0000,?,o,?,?,?
+no,rn,cancer,vmn0000,1,post,vmn0000,no,ni,rn,rg,o,?,?,?
+no,rn,ni,rg,2,post,?,cancer,paralisis,vmn0000,nc0n000,o,?,?,?
+no,rn,paralisis,nc0n000,3,post,?,ni,?,rg,?,o,?,?,?
+% 1
+ni,rg,no,rn,2,pre,?,?,cancer,?,vmn0000,o,?,?,?
+ni,rg,cancer,vmn0000,1,pre,vmn0000,no,ni,rn,rg,o,?,?,?
+ni,rg,paralisis,nc0n000,1,post,nc0n000,ni,?,rg,?,o,?,?,?

@@ -42,7 +42,9 @@ Automatic negation detector for clinical documents in Spanish
 # AUTHORS #
 
 Noa Patricia Cruz Díaz
+
 Francisco de Paula Pérez León
+
 Silvia Sánchez Seda
 
 --------------------------------------------------------------------------------------------------------------------
