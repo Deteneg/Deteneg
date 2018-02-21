@@ -1,8 +1,10 @@
 % 1
-no,rn,cancer,vmn0000,1,post,vmn0000,no,ni,rn,rg,o,?,?,?
-no,rn,ni,rg,2,post,?,cancer,paralisis,vmn0000,nc0n000,o,?,?,?
-no,rn,paralisis,nc0n000,3,post,?,ni,?,rg,?,o,?,?,?
+no,rn,cancer,vmn0000,1,post,vmn0000,no,hepatico,rn,aq0000,o,?,?,?
+no,rn,hepatico,aq0000,2,post,aq0000_vmn0000,cancer,ni,vmn0000,cc,o,?,?,?
+no,rn,ni,cc,3,post,cc_aq0000_vmn0000,hepatico,paralisis,aq0000,nc0n000,o,?,?,?
+no,rn,paralisis,nc0n000,4,post,?,ni,?,cc,?,o,?,?,?
 % 1
-ni,rg,no,rn,2,pre,?,?,cancer,?,vmn0000,o,?,?,?
-ni,rg,cancer,vmn0000,1,pre,vmn0000,no,ni,rn,rg,o,?,?,?
-ni,rg,paralisis,nc0n000,1,post,nc0n000,ni,?,rg,?,o,?,?,?
+ni,cc,no,rn,3,pre,?,?,cancer,?,vmn0000,o,?,?,?
+ni,cc,cancer,vmn0000,2,pre,vmn0000_aq0000,no,hepatico,rn,aq0000,o,?,?,?
+ni,cc,hepatico,aq0000,1,pre,aq0000,cancer,ni,vmn0000,cc,o,?,?,?
+ni,cc,paralisis,nc0n000,1,post,nc0n000,ni,?,cc,?,o,?,?,?

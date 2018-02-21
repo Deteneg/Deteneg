@@ -29,10 +29,10 @@ public class Test {
 	/**
 	 * Class that receives a sentence and returns it with its labeled negations
 	 */
-	public String test(String sentence) throws Exception {
+	public List<String> test(String sentence) throws Exception {
 
 		// Needed structures
-		String clasificacion = new String(); // String for the classified sentence
+		List<String> clasificacion = new ArrayList<String>(); // String for the classified sentence
 		List<Word> words = new ArrayList<Word>(); // List of words
 		List<CompleteWord> index = new ArrayList<CompleteWord>(); // Index of words
 		List<info> index_signals_clasificadas = new ArrayList<info>(); 	// List of classified words
@@ -63,7 +63,7 @@ public class Test {
 
 		// If the sentence does not contain negations, save the sentence
 		if (neges == false) {
-			clasificacion = sentence;
+			clasificacion.add(sentence);
 		}
 		// Otherwise, to classify the scope
 		else {
@@ -133,7 +133,7 @@ public class Test {
 
 			// To save the classification of the sentence in a file
 			VisualizeSentence v = new VisualizeSentence();
-			clasificacion = v.vualize(index_signals_clasificadas, index_signals_clasificadas_scopes);
+			clasificacion = v.visualize(index_signals_clasificadas, index_signals_clasificadas_scopes);
 
 		}
 		return clasificacion;

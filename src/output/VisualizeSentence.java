@@ -14,27 +14,20 @@ public class VisualizeSentence {
 	 * @param indexClasifyScopes: indice fruto de la identificación del alcance de las negaciones/especulaciones mediante Weka
 	 * @throws IOException
 	 */
-	public String vualize(List<info> indexClassify, List<info> indexClassifyScopes) throws IOException{
+	public List<String> visualize(List<info> indexClassify, List<info> indexClassifyScopes) throws IOException{
 		
+		List<String> ret = new ArrayList<String>();
 		
-		String ret = "";
-		List<String> sentence = new ArrayList<String>();
-		indexClassify.forEach(i -> { sentence.add(i.getToken()); } ); //Set sentence into a List		
-		int sizeSentence= indexClassify.size();
-		
-		
-		int numNegs=0;
-		
-		//For each negation particle
+		String line = "";		
+		int sizeSentence= indexClassify.size();				
+		int numNegs=0;	
+			
+		//Get number of neg tags
 		for( info aux : indexClassify ){
 			if(aux.getType().trim().equals("bn")){
 				numNegs++; //Count number of negation particles
-				int index = sentence.indexOf(aux.getToken());
-				sentence.add(index+1, "</NEG"+numNegs+">"); //Close tag
-				sentence.add(index, "<NEG"+numNegs+">");  //Open tag
 			}
 		}
-		
 		
 		//Modify indexClassifyScopes for each negation
 		int cont=0;
@@ -46,27 +39,48 @@ public class VisualizeSentence {
 			}
 		}
 		
-		
-		//For each in-out words
-		int scope = 1;
-		for(int i=0; i< indexClassifyScopes.size(); i++){
+		//For each negation, we need to build a tagged string 
+		for(int i=0; i<numNegs; i++){
+			List<String> sentence = new ArrayList<String>();
+			indexClassify.forEach(t -> { sentence.add(t.getToken()); } ); //Set sentence into a List	
 			
-			if(indexClassifyScopes.get(i).getType().trim().equals("is")){
-				int index = sentence.indexOf(indexClassifyScopes.get(i).getToken());
-				sentence.add(index+1, "</SCOPE"+scope+">"); //Close tag
-				sentence.add(index, "<SCOPE"+scope+">");  //Open tag
-			}			
+			//For each negation particle
+			cont = 0;
+			for( info aux : indexClassify ){
+				if(aux.getType().trim().equals("bn")){
+					cont++;
+					if(i+1==cont){
+						int index = sentence.indexOf(aux.getToken());
+						sentence.add(index+1, "</NEG"+ (i+1) +">"); //Close tag
+						sentence.add(index, "<NEG"+ (i+1) +">");  //Open tag
+						break;
+					}
+				}
+			}
 			
-			if( (i+1) % (sizeSentence-1) == 0){  //If it is divisible by numNegs
-				scope++;
-			}			
-		}
-		
-	
-		//Copy sentence List to String
-		for(String aux : sentence){
-			ret = ret + " " + aux;
-		}
+			//For each in-out words
+			int scope = i+1;
+			for(int j=i*(sizeSentence-1); j<(i*(sizeSentence-1))+sizeSentence-1; j++){
+				
+				if(indexClassifyScopes.get(j).getType().trim().equals("is")){
+					int index = sentence.indexOf(indexClassifyScopes.get(j).getToken());
+					sentence.add(index+1, "</SCOPE"+scope+">"); //Close tag
+					sentence.add(index, "<SCOPE"+scope+">");  //Open tag
+				}					
+			}	
+			
+			//Copy sentence List to String
+			line = "";
+			for(String aux : sentence){
+				line = line + " " + aux;
+			}
+			
+			//Delete duplicated tags
+			line = line.replaceAll("</SCOPE"+scope+">" + " " + "<SCOPE"+scope+">" ,"");
+			
+			ret.add(line);	
+			
+		}		
 	
 		
 		return ret;	

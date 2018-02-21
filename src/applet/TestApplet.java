@@ -9,6 +9,7 @@ import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JApplet;
@@ -33,7 +34,7 @@ public class TestApplet extends JApplet{
 	String s;
 	TextArea frase;
 	JButton boton;
-	TextField letra;
+	TextArea letra;
 	Panel norte, centro, sur;
 
 	public static void main(String[] args) {
@@ -66,12 +67,14 @@ public class TestApplet extends JApplet{
 	public void init() {
 		s = "";
 		frase = new TextArea();
+		frase.setSelectionStart(1);
+		frase.setSelectionEnd(1);
 		frase.setCaretPosition(1);
 		frase.setColumns(1);
 		frase.setRows(1);
 		frase.setFont(new Font("Dialog", Font.PLAIN, 16));
 		boton = new JButton("Annotate");
-		boton.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		boton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		boton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		// To tell the button what it has to do when it is pressed
@@ -80,7 +83,11 @@ public class TestApplet extends JApplet{
 
 				Test t = new Test();
 				try {
-					String resp = t.test(frase.getText());
+					List<String> visualization = t.test(frase.getText());
+					String resp = "" ;
+					for(String s : visualization){
+						resp = "   " + resp + "\n\n" + s;
+					}					
 					letra.setText(resp);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
@@ -94,8 +101,7 @@ public class TestApplet extends JApplet{
 		centro = new Panel();
 		centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
 
-		Label lab = new Label("Introduce the sentence to annotate");
-		Font myFont = new Font("", Font.BOLD, 12);
+		Label lab = new Label("Introduce the sentence to annotate");		
 		lab.setFont(new Font("Dialog", Font.BOLD, 18));
 		norte.add(lab);
 		centro.add(frase);
@@ -104,19 +110,9 @@ public class TestApplet extends JApplet{
 		centro.add(boton);
 
 		// To create the "letra" label
-		letra = new TextField("                                                                    " + "    "
-
-						+ "                                                                     "
-
-						+ "                                                                             "
-
-						+ "                                                                             "
-
-						+ "                                                                             "
-
-						+ "                                                                                ");
+		letra = new TextArea("");
 		letra.setEditable(false);
-		letra.setFont(new Font("Dialog", Font.BOLD, 17));
+		letra.setFont(new Font("Dialog", Font.BOLD, 18));
 		letra.setForeground(Color.BLACK);
 		letra.setSelectionEnd(10);
 		letra.setSelectionStart(10);
