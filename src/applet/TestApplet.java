@@ -5,9 +5,11 @@ import java.awt.Font;
 import java.awt.Label;
 import java.awt.Panel;
 import java.awt.TextArea;
+import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.JApplet;
 import javax.swing.JButton;
@@ -15,17 +17,27 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import test.Test;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Color;
 
-public class TestApplet extends JApplet {
+public class TestApplet extends JApplet{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public TestApplet() {
+	}
 
 	String s;
 	TextArea frase;
 	JButton boton;
-	Label letra;
+	TextField letra;
 	Panel norte, centro, sur;
 
 	public static void main(String[] args) {
-		JFrame f = new JFrame("Deteneg. Negation annotator");
+		JFrame f = new JFrame("Deteneg: Negation Annotator");
 
 		// To create an instance of TestApplet
 		TestApplet ta = new TestApplet();
@@ -37,7 +49,9 @@ public class TestApplet extends JApplet {
 		// To initialize the variables with the width and height of the tag
 		// <applet>
 		// Fullscreen
-		f.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+		Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+		size.setSize(size.getWidth()/2, size.getHeight()/2);
+		f.setSize(size);		
 
 		// To call init()
 		ta.init();
@@ -52,7 +66,13 @@ public class TestApplet extends JApplet {
 	public void init() {
 		s = "";
 		frase = new TextArea();
+		frase.setCaretPosition(1);
+		frase.setColumns(1);
+		frase.setRows(1);
+		frase.setFont(new Font("Dialog", Font.PLAIN, 16));
 		boton = new JButton("Annotate");
+		boton.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		boton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		// To tell the button what it has to do when it is pressed
 		boton.addActionListener(new ActionListener() {
@@ -60,7 +80,8 @@ public class TestApplet extends JApplet {
 
 				Test t = new Test();
 				try {
-					letra.setText(t.test(frase.getText()));
+					String resp = t.test(frase.getText());
+					letra.setText(resp);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -75,7 +96,7 @@ public class TestApplet extends JApplet {
 
 		Label lab = new Label("Introduce the sentence to annotate");
 		Font myFont = new Font("", Font.BOLD, 12);
-		lab.setFont(myFont);
+		lab.setFont(new Font("Dialog", Font.BOLD, 18));
 		norte.add(lab);
 		centro.add(frase);
 
@@ -83,12 +104,23 @@ public class TestApplet extends JApplet {
 		centro.add(boton);
 
 		// To create the "letra" label
-		letra = new Label("                                                                    " + "    "
-				+ "                                                                     "
-				+ "                                                                             "
-				+ "                                                                             "
-				+ "                                                                             "
-				+ "                                                                                ");
+		letra = new TextField("                                                                    " + "    "
+
+						+ "                                                                     "
+
+						+ "                                                                             "
+
+						+ "                                                                             "
+
+						+ "                                                                             "
+
+						+ "                                                                                ");
+		letra.setEditable(false);
+		letra.setFont(new Font("Dialog", Font.BOLD, 17));
+		letra.setForeground(Color.BLACK);
+		letra.setSelectionEnd(10);
+		letra.setSelectionStart(10);
+		letra.setColumns(0);
 
 		// To add "letra" tag to center dashboard
 		centro.add(letra);
@@ -99,9 +131,10 @@ public class TestApplet extends JApplet {
 
 		// To add north dashboard to north, south dashboard to south and center
 		// dashboard to center
-		this.add("North", norte);
-		this.add("Center", centro);
+		getContentPane().add("North", norte);
+		getContentPane().add("Center", centro);
 
 	}
+	
 
 }

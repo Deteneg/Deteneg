@@ -3,200 +3,95 @@ package output;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import classes.info;
 
 public class VisualizeSentence {
-
-	/**
-	 * To show the sentence classified
-	 * 
-	 * @param indexClasify:
-	 *            index with the tagged cues
-	 * @param indexClasifyScopes:
-	 *            index with the tagged scopes through Weka
+	
+	
+	/** Muestra por pantalla la frase de entrada etiquetada con las neg/esp asi como el alcance asociado
+	 * @param indexClasify: indice fruto de la identificación de las negaciones/especulaciones mediante Weka
+	 * @param indexClasifyScopes: indice fruto de la identificación del alcance de las negaciones/especulaciones mediante Weka
 	 * @throws IOException
 	 */
-	public String vualize(List<info> indexClassify, List<info> indexClassifyScopes) throws IOException {
-
-		String sentence = "";
-		int numSignals = 0;
-		List<String> scopes = new ArrayList<String>();
-		List<info> indexClassifyCopy = new ArrayList<info>();
-
-		info iff;
-		for (int i = 0; i < indexClassify.size(); i++) {
-			iff = new info();
-			iff.setToken(indexClassify.get(i).getToken());
-			iff.setType(indexClassify.get(i).getType());
-			indexClassifyCopy.add(iff);
-		}
-
-		// Postprocessing removing "os isn os" "os ise os"
-		for (int i = 1; i < indexClassify.size() - 1; i++) {
-			if (indexClassify.get(i).getType().contains("is") && indexClassify.get(i - 1).getType().contains("os")
-					&& indexClassify.get(i + 1).getType().contains("os"))
-				indexClassify.get(i).setType("os");
-
-		}
-		if (indexClassify.get(0).getType().contains("is") && indexClassify.get(1).getType().contains("os"))
-			indexClassify.get(0).setType("os");
-
-		if (indexClassify.get(indexClassify.size() - 1).getType().contains("is")
-				&& indexClassify.get(indexClassify.size() - 2).getType().contains("os"))
-			indexClassify.get(indexClassify.size() - 1).setType("os");
-
-		// To check the number of cues in the sentence
-		for (int i = 0; i < indexClassify.size(); i++)
-			if (indexClassify.get(i).getType().equals("bn"))
-				numSignals++;
-
-		int index = 0;
-		int longitud = 0;
-		int longitudes[] = new int[numSignals];
-		int longitudSignals[] = new int[numSignals];
-
-		for (int i = 0; i < numSignals; i++) {
-			while (index < indexClassify.size() - 1 && (indexClassify.get(index).getType().equals("bn") == false))
-				index++;
-			if (indexClassify.get(index).getType().equals("bn")) {
-				longitud = 1;
-				index++;
-				while (index < indexClassify.size() && indexClassify.get(index).getType().equals("o") == false
-						&& indexClassify.get(index).getType().equals("bn") == false) {
-					longitud++;
-					index++;
-				}
-				longitudes[i] = indexClassify.size() - longitud;
-				longitudSignals[i] = longitud;
-			}
-
-		}
-
-		// To save the scopesv according to the cues
-		int c = 0;
-
-		int it = 0;
-		for (int i = 0; i < numSignals; i++) {
-
-			for (int j = 0; j < indexClassifyCopy.size(); j++) {
-
-				if (indexClassifyCopy.get(j).getType().equals("bn") && it == i) {
-					scopes.add("bn");
-					indexClassifyCopy.get(j).setType("o");
-					it++;
-
-					for (int g = 1; g < longitudSignals[i]; g++) {
-						j++;
-						scopes.add("in");
-						indexClassifyCopy.get(j).setType("o");
-					}
-				}
-
-				else {
-					scopes.add(indexClassifyScopes.get(c).getType());
-					c++;
-
-				}
-
+	public String vualize(List<info> indexClassify, List<info> indexClassifyScopes) throws IOException{
+		
+		
+		String ret = "";
+		List<String> sentence = new ArrayList<String>();
+		indexClassify.forEach(i -> { sentence.add(i.getToken()); } ); //Set sentence into a List		
+		int sizeSentence= indexClassify.size();
+		
+		
+		int numNegs=0;
+		
+		//For each negation particle
+		for( info aux : indexClassify ){
+			if(aux.getType().trim().equals("bn")){
+				numNegs++; //Count number of negation particles
+				int index = sentence.indexOf(aux.getToken());
+				sentence.add(index+1, "</NEG"+numNegs+">"); //Close tag
+				sentence.add(index, "<NEG"+numNegs+">");  //Open tag
 			}
 		}
-
-		// To tag the cues and the scopes
-		int pals = scopes.size() / numSignals;
-
-		for (int h = 0; h < numSignals; h++) {
-
-			int scope = numSignals - h;
-			int tamend = scopes.size() - (pals * h) - 1;
-			int tambegin = scopes.size() - (pals * (h + 1));
-
-			int in = -1;
-
-			for (int m = tambegin; m <= tamend; m++) {
-				in++;
-
-				if (m == tambegin) {
-					if (scopes.get(m).contains("is"))
-						if (scopes.get(m + 1).contains("os"))
-							indexClassify.get(in).setToken("<SCOPE" + scope + ">" + indexClassify.get(in).getToken()
-									+ "</SCOPE" + scope + ">");
-						else
-							indexClassify.get(in).setToken("<SCOPE" + scope + ">" + indexClassify.get(in).getToken());
-					if (scopes.get(m).contains("bn"))
-						if (scopes.get(m + 1).contains("in") == false)
-							indexClassify.get(in).setToken(
-									"<NEG" + scope + ">" + indexClassify.get(in).getToken() + "</NEG" + scope + ">");
-						else
-							indexClassify.get(in).setToken("<NEG" + scope + ">" + indexClassify.get(in).getToken());
-				}
-
-				if (m == tamend) {
-					if (scopes.get(m).contains("bn"))
-						indexClassify.get(in).setToken(
-								"<NEG" + scope + ">" + indexClassify.get(in).getToken() + "</NEG" + scope + ">");
-					if (scopes.get(m).contains("in"))
-						indexClassify.get(in).setToken(indexClassify.get(in).getToken() + "</NEG" + scope + ">");
-					if (scopes.get(m).contains("is"))
-						if (tamend - tambegin == 1 || ((tamend - tambegin == 2) || scopes.get(m - 1).contains("in")))
-							indexClassify.get(in).setToken("<SCOPE" + scope + ">" + indexClassify.get(in).getToken()
-									+ "</SCOPE" + scope + ">");
-						else
-							indexClassify.get(in).setToken(indexClassify.get(in).getToken() + "</SCOPE" + scope + ">");
-				}
-
-				if (m != tambegin && m != tamend) {
-
-					if (scopes.get(m).contains("bn")) {
-						if (scopes.get(m + 1).contains("in"))
-							indexClassify.get(in).setToken("<NEG" + scope + ">" + indexClassify.get(in).getToken());
-						else
-							indexClassify.get(in).setToken(
-									"<NEG" + scope + ">" + indexClassify.get(in).getToken() + "</NEG" + scope + ">");
-					}
-
-					else if (scopes.get(m).contains("in")) {
-						indexClassify.get(in).setToken(indexClassify.get(in).getToken() + "</NEG" + scope + ">");
-
-					}
-
-					if (scopes.get(m).contains("is")) {
-						if (scopes.get(m + 1).contains("os"))
-							indexClassify.get(in).setToken(indexClassify.get(in).getToken() + "</SCOPE" + scope + ">");
-						if (scopes.get(m - 1).contains("os"))
-							indexClassify.get(in).setToken("<SCOPE" + scope + ">" + indexClassify.get(in).getToken());
-
-						if (scopes.get(m + 1).contains("b")) {
-							if (m + 2 < scopes.size()) {
-								if (scopes.get(m + 2).contains("os") || scopes.get(m + 2).contains("in")
-										|| scopes.get(m + 2).contains("ie"))
-									indexClassify.get(in)
-											.setToken(indexClassify.get(in).getToken() + "</SCOPE" + scope + ">");
-							} else
-								indexClassify.get(in)
-										.setToken(indexClassify.get(in).getToken() + "</SCOPE" + scope + ">");
-						}
-
-						if (scopes.get(m - 1).contains("b")) {
-							if (m - 2 > 0) {
-								if (scopes.get(m - 2).contains("os") || scopes.get(m - 2).contains("in"))
-									indexClassify.get(in)
-											.setToken("<SCOPE" + scope + ">" + indexClassify.get(in).getToken());
-							} else
-								indexClassify.get(in)
-										.setToken("<SCOPE" + scope + ">" + indexClassify.get(in).getToken());
-						}
-
-					}
-
-				}
+		
+		
+		//Modify indexClassifyScopes for each negation
+		int cont=0;
+		for(int i=1; i <= numNegs; i++){
+			List<String> aux = getListWordsNoBN(indexClassify, i);
+			for(String s:aux){
+				indexClassifyScopes.get(cont).setToken(s);
+				cont++;
 			}
-
 		}
-
-		for (int h = 0; h < indexClassify.size(); h++)
-			sentence = sentence + " " + indexClassify.get(h).getToken();
-
-		return sentence;
+		
+		
+		//For each in-out words
+		int scope = 1;
+		for(int i=0; i< indexClassifyScopes.size(); i++){
+			
+			if(indexClassifyScopes.get(i).getType().trim().equals("isn")){
+				int index = sentence.indexOf(indexClassifyScopes.get(i).getToken());
+				sentence.add(index+1, "</SCOPE"+scope+">"); //Close tag
+				sentence.add(index, "<SCOPE"+scope+">");  //Open tag
+			}			
+			
+			if( (i+1) % (sizeSentence-1) == 0){  //If it is divisible by numNegs
+				scope++;
+			}			
+		}
+		
+	
+		//Copy sentence List to String
+		for(String aux : sentence){
+			ret = ret + " " + aux;
+		}
+	
+		
+		return ret;	
+	}	
+	
+	
+	public List<String> getListWordsNoBN(List<info> indexClassify, Integer bn){
+		List<String> ret = new ArrayList<String>();;
+		
+		Integer numBN = 0;
+		
+		for(info aux : indexClassify){
+			if(aux.getType().trim().equals("bn")){
+				numBN++;
+				if(!numBN.equals(bn)){
+					ret.add(aux.getToken());
+				}
+			}else{
+				ret.add(aux.getToken());
+			}
+			
+		}	
+		
+		
+		return ret;
 	}
 
 }
