@@ -24,7 +24,7 @@ Automatic negation detector for clinical documents in Spanish
 1. Update external JARs:
     - Add Stanford CoreNLP Spanish
     - Review other included libraries
-2. You can add your own model to the Classification folder or use the given one
+2. You can add your own model to the Classification folder or use the given one (see documentation instructions)
 3. Review Config/config.conf if you modify something
 
 ------------------------------------------------------------------------------------
